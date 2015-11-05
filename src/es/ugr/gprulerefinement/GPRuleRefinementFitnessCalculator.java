@@ -2,6 +2,7 @@ package es.ugr.gprulerefinement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import es.ugr.gprulerefinement.variables.Action;
 import es.ugr.gprulerefinement.variables.Variable;
@@ -18,29 +19,8 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 	@Override
 	public Fitness calculateFitness(Individual ind) {
 		TreeGenome tg = (TreeGenome) ind.getGenome();
-		System.out.println("TREE");
-		System.out.println(tg.toStringWithDepth());
-		System.out.println("ENDTREE");
-		List<GenericTreeNode> leafs = new ArrayList<GenericTreeNode>();
-		for(GenericTreeNode n:tg.getNodeList()){
-			if(!n.hasChildren())
-				leafs.add(n);
-			System.out.println("SIZE "+tg.getNodeList().size());
-				
-		}
-		String arbol = "";
-		for(GenericTreeNode v:leafs){
-			Action action = (Action)v.getData();
-			GenericTreeNode p = v.getParent();
-			while(p.getParent()!=null){
-				arbol = arbol + p.toString()+" AND ";
-				p = p.getParent();
-			}
-			arbol = arbol+action.toString();
-			arbol = arbol+"\n";
-		}
-		System.out.println(arbol);
-		return new DoubleFitness(new Double(1.0), true);
+		
+		return new DoubleFitness(new Double(new Random().nextDouble()), true);
 	}
 
 	@Override
@@ -55,10 +35,29 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 	}
 
 	public static String writeTree(TreeGenome tg){
-		String finalS = "";
-		
-		List<GenericTreeNode> all = tg.getNodeList();
-		return "";
+
+		System.out.println(tg.toStringWithDepth());
+
+		List<GenericTreeNode> leafs = new ArrayList<GenericTreeNode>();
+		for(GenericTreeNode n:tg.getNodeList()){
+			if(!n.hasChildren())
+				leafs.add(n);
+				
+		}
+		String arbol = "";
+		for(GenericTreeNode v:leafs){
+			Action action = (Action)v.getData();
+			GenericTreeNode p = v.getParent();
+			while(p.getParent()!=null){
+				arbol = arbol + p.toString()+" AND ";
+				p = p.getParent();
+			}
+			arbol = arbol + p.toString()+" ";
+			arbol = arbol+action.toString();
+			arbol = arbol+"\n";
+		}
+		System.out.println(arbol);
+		return arbol;
 		
 	}
 }
