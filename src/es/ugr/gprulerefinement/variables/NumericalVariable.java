@@ -2,7 +2,7 @@ package es.ugr.gprulerefinement.variables;
 
 import java.util.Random;
 
-public abstract class  NumericalType extends Type {
+public abstract class  NumericalVariable extends Type {
 	int min;
 	int max;
 	

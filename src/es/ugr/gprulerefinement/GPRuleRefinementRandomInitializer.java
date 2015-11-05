@@ -3,6 +3,7 @@ package es.ugr.gprulerefinement;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.ugr.gprulerefinement.variables.Action;
 import es.ugr.gprulerefinement.variables.Variable;
 import es.ugr.osgiliath.OsgiliathService;
 import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.GenericTreeNode;
@@ -79,4 +80,4 @@ public class GPRuleRefinementRandomInitializer extends OsgiliathService implemen
 	}
 
 
-}
+

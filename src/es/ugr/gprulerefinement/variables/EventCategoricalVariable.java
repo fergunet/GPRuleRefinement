@@ -1,8 +1,8 @@
 package es.ugr.gprulerefinement.variables;
 
-public class EventCategoricalType extends CategoricalType{
+public class EventCategoricalVariable extends CategoricalVariable{
 
-	EventCategoricalType(){
+	EventCategoricalVariable(){
 		
 		this.name = "event_type";
 		this.possibleValues = new String[]{"LOG_IN",

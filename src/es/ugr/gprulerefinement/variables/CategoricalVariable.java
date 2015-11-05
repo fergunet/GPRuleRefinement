@@ -2,7 +2,7 @@ package es.ugr.gprulerefinement.variables;
 
 import java.util.Random;
 
-public abstract class CategoricalType extends Type{
+public abstract class CategoricalVariable extends Variable{
 
 	String[] possibleValues;
 	
@@ -11,6 +11,9 @@ public abstract class CategoricalType extends Type{
 		return possibleValues[idx];
 	}
 	
+	public String toString(){
+		return this.getName()+"=>"+this.getValue();
+	}
 
 
 }
