@@ -4,7 +4,7 @@ import java.util.Random;
 
 public abstract class CategoricalVariable extends Variable{
 
-	String[] possibleValues;
+	protected String[] possibleValues;
 	
 	public String getRandomValue(){
 		int idx = new Random().nextInt(possibleValues.length);
@@ -14,6 +14,11 @@ public abstract class CategoricalVariable extends Variable{
 	public String toString(){
 		return this.getName()+"=>"+this.getValue();
 	}
+	
+
+	
+
+
 
 
 }

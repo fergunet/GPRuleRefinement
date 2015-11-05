@@ -6,18 +6,23 @@ import es.ugr.osgiliath.evolutionary.individual.Gene;
 
 public abstract class  Variable implements Gene {
 
-	private String name;
-	private String value;
+	protected String name;
+	protected String value;
 
-	public static final String packageName = "es.ugr.gprulerefinement.variables";
+	public static final String packageName = "es.ugr.gprulerefinement.variables.types";
 
-	public static String availableTypes[] = new String[] { "EventCategoricalVariable",
-			"PasswordLengthNumericalVariable" };
+	public static String availableTypes[] = new String[] { 
+			"DeviceHasAntivirusBinaryVariable",
+			"DeviceHasPassword",
+			"DeviceOwnedByCategoricalVariable",
+			"DeviceScreenTimeoutNumericalVariable",
+			"DeviceTypeCategoricalVariable",
+			"EventLevelCategoricalVariable",
+			"EventTypeCategoricalVariable",
+			"PasswordLengthNumericalVariable"
 
-	/*private Variable(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}*/
+	};
+
 	
 	public  String getName(){
 		return this.name;
@@ -32,6 +37,7 @@ public abstract class  Variable implements Gene {
 	}
 
 	public abstract String getRandomValue();
+	
 
 	public static Variable generateRandomVariable() {
 		int idx = new Random().nextInt(availableTypes.length);
@@ -40,8 +46,8 @@ public abstract class  Variable implements Gene {
 		try {
 			ct = Class.forName(packageName + "." + availableTypes[idx]);
 
-			Variable t = (Variable) ct.newInstance();
-			t.mutateValue();
+			Object o = ct.newInstance();
+			var = (Variable) o;
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -52,10 +58,6 @@ public abstract class  Variable implements Gene {
 
 	}
 
-	public default Object clone() {
-		return new this.new (this.name, this.value); // In principle Variables
-													// are inmutable (as Strings
-													// are)
-	}
+    public abstract Object clone();
 
 }

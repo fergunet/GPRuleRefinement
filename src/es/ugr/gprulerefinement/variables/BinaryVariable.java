@@ -1,11 +1,22 @@
 package es.ugr.gprulerefinement.variables;
 
-public class BinaryVariable extends Variable{
+import java.util.Random;
+
+public abstract class BinaryVariable extends Variable{
 
 	@Override
 	public String getRandomValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.toString(new Random().nextBoolean());
+		 
 	}
 
+	@Override
+	public abstract Object clone();
+	
+	public String toString(){
+		return this.name+"="+this.value;
+	}
+
+	
+	
 }

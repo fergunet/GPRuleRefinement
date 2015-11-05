@@ -19,6 +19,15 @@ public class GPRuleRefinementMutation  extends OsgiliathService implements Mutat
 		//TODO clonar?
 		
 		GenericTreeNode node = tree.getRandomNode();
+		
+		//TEST
+		/*System.out.println(tree.toString());
+		for(int i = 0; i< 20; i++){
+			GenericTreeNode n = tree.getRandomNode();
+			System.out.println("R "+n.toString());
+		}*/
+		///
+		
 		//TODO confirmar que devuelve
 		if(node.getData() instanceof Action && node.getChildren().size()!=0)
 			System.out.println("NO DEBERIA TENER HIJOS!!!!");
