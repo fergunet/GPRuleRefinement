@@ -19,8 +19,17 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 	@Override
 	public Fitness calculateFitness(Individual ind) {
 		TreeGenome tg = (TreeGenome) ind.getGenome();
+		String treeString = writeTree(tg);
+		System.out.println("INDIVIDUAL IS: "+treeString);
+		System.out.println("END INDIVIDUAL");
+		double theFitness = 0;
+		boolean toMaximize = true;
+		//Write the magic here
 		
-		return new DoubleFitness(new Double(new Random().nextDouble()), true);
+		
+		
+		
+		return new DoubleFitness(new Double(theFitness), toMaximize);
 	}
 
 	@Override
@@ -56,7 +65,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			arbol = arbol+action.toString();
 			arbol = arbol+"\n";
 		}
-		System.out.println(arbol);
+		
 		return arbol;
 		
 	}
