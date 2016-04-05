@@ -16,10 +16,20 @@ public abstract class  Variable implements Gene {
 			"DeviceHasPassword",
 			"DeviceOwnedByCategoricalVariable",
 			"DeviceScreenTimeoutNumericalVariable",
-			"DeviceTypeCategoricalVariable",
+			"UserRoleCategoricalVariable",
 			"EventLevelCategoricalVariable",
 			"EventTypeCategoricalVariable",
-			"PasswordLengthNumericalVariable"
+			"PasswordLengthNumericalVariable",
+			"DeviceTypeCategoricalVariable",
+			"DeviceOSCategoricalVariable",
+			"AssetConfidentialLevelCategoricalVariable",
+			"WifiEncryptionCategoricalVariable",
+			"DeviceHasAccessibilityBinaryVariable",
+			"DeviceIsRootedBinaryVariable",
+			"MailHasAttachmentBinaryVariable",
+			"WifiEnabledBinaryVariable",
+			"WifiConnectedBinaryVariable",
+			"BluetoothConnectedBinaryVariable"
 
 	};
 
