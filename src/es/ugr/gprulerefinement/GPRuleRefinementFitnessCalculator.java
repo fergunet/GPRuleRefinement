@@ -1,6 +1,8 @@
 package es.ugr.gprulerefinement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -13,13 +15,33 @@ import es.ugr.osgiliath.evolutionary.basiccomponents.individuals.DoubleFitness;
 import es.ugr.osgiliath.evolutionary.elements.FitnessCalculator;
 import es.ugr.osgiliath.evolutionary.individual.Fitness;
 import es.ugr.osgiliath.evolutionary.individual.Individual;
+import eu.musesproject.server.db.handler.DBManager;
+import eu.musesproject.server.entity.PatternsKrs;
+import eu.musesproject.server.scheduler.ModuleType;
 
 public class GPRuleRefinementFitnessCalculator  extends OsgiliathService implements FitnessCalculator{
 
+	private static DBManager dbManager = new DBManager(ModuleType.KRS);
+	
 	@Override
 	public Fitness calculateFitness(Individual ind) {
 		TreeGenome tg = (TreeGenome) ind.getGenome();
 		String treeString = writeTree(tg);
+		
+		/* Step 1: To retrieve patterns from DB
+		 * Step 2: To look for conditions and compare values
+		 * Step 3: To mark pattern as filtered by the rule or not
+		 * */
+		
+		/* 1 */
+		List<PatternsKrs> patternList = dbManager.getPatternsKRS();
+		if (patternList.size()>0){
+			
+			
+		} else {
+			System.out.println("There are not patterns in the database");
+		}
+		
 		System.out.println("INDIVIDUAL IS: "+treeString);
 		System.out.println("END INDIVIDUAL");
 		double theFitness = 0;
