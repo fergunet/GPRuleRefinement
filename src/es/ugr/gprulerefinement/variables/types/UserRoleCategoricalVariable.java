@@ -2,11 +2,11 @@ package es.ugr.gprulerefinement.variables.types;
 
 import es.ugr.gprulerefinement.variables.CategoricalVariable;
 
-public class DeviceTypeCategoricalVariable extends CategoricalVariable {
+public class UserRoleCategoricalVariable extends CategoricalVariable {
 
-	public DeviceTypeCategoricalVariable() {
+	public UserRoleCategoricalVariable() {
 
-		this.name = "device_type";
+		this.name = "user_role";
 
 		this.possibleValues = new String[] { "Employee", 
 				"Consultancy", 
@@ -22,7 +22,7 @@ public class DeviceTypeCategoricalVariable extends CategoricalVariable {
 	@Override
 	public Object clone() {
 
-		DeviceTypeCategoricalVariable a = new DeviceTypeCategoricalVariable();
+		UserRoleCategoricalVariable a = new UserRoleCategoricalVariable();
 		a.value = this.value;
 
 		return a;
