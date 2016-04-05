@@ -23,7 +23,8 @@ public abstract class  Variable implements Gene {
 			"DeviceTypeCategoricalVariable",
 			"DeviceOSCategoricalVariable",
 			"AssetConfidentialLevelCategoricalVariable",
-			"WifiEncryptionCategoricalVariable"
+			"WifiEncryptionCategoricalVariable",
+			"DeviceHasAccessibilityBinaryVariable"
 
 	};
 
