@@ -26,7 +26,9 @@ public abstract class  Variable implements Gene {
 			"WifiEncryptionCategoricalVariable",
 			"DeviceHasAccessibilityBinaryVariable",
 			"DeviceIsRootedBinaryVariable",
-			"MailHasAttachmentBinaryVariable"
+			"MailHasAttachmentBinaryVariable",
+			"WifiEnabledBinaryVariable",
+			"WifiConnectedBinaryVariable"
 
 	};
 
