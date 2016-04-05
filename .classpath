@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/OsgiliathBasicEvolutionaryComponents"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OsgiliathEvolutionaryAlgorithm"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OsgiliathExperimentLauncher"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/server"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
