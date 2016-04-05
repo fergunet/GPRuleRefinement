@@ -24,6 +24,8 @@ public class DeviceOSCategoricalVariable extends CategoricalVariable {
 				"Windows7 Professional",
 				"Windows8.1 Professional",
 				"Windows7 Home Edition"};
+		
+		this.value = this.getRandomValue();
 	}
 
 	@Override
