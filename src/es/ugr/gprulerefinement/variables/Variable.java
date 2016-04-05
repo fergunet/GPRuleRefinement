@@ -19,7 +19,8 @@ public abstract class  Variable implements Gene {
 			"UserRoleCategoricalVariable",
 			"EventLevelCategoricalVariable",
 			"EventTypeCategoricalVariable",
-			"PasswordLengthNumericalVariable"
+			"PasswordLengthNumericalVariable",
+			"DeviceTypeCategoricalVariable"
 
 	};
 
