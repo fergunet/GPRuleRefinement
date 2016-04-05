@@ -28,7 +28,8 @@ public abstract class  Variable implements Gene {
 			"DeviceIsRootedBinaryVariable",
 			"MailHasAttachmentBinaryVariable",
 			"WifiEnabledBinaryVariable",
-			"WifiConnectedBinaryVariable"
+			"WifiConnectedBinaryVariable",
+			"BluetoothConnectedBinaryVariable"
 
 	};
 
