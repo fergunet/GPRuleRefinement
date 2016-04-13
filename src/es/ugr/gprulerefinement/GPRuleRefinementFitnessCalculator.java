@@ -37,7 +37,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		String treeString = writeTree(tg);
 		
 		System.out.println("INDIVIDUAL IS: "+treeString);
-		System.out.println("END INDIVIDUAL");		
+		System.out.println("END INDIVIDUAL");
 		boolean toMaximize = true;
 		double theFitness = 0;
 		
@@ -80,7 +80,9 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		List<GenericTreeNode> leafs = new ArrayList<GenericTreeNode>();
 		for(GenericTreeNode n:tg.getNodeList()){
 			if(!n.hasChildren())
-				leafs.add(n);
+				if(!isBrotherInside(leafs,n))
+					leafs.add(n);
+				
 				
 		}
 		String arbol = "";
@@ -141,5 +143,17 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		}
 		
 		return covered;
+	}
+
+	private static boolean isBrotherInside(List<GenericTreeNode> list, GenericTreeNode node){
+		GenericTreeNode p = node.getParent();
+		List<GenericTreeNode > childs = p.getChildren();
+		for(GenericTreeNode c:childs){
+			for(GenericTreeNode cand:list)
+				if(c == cand)
+					return true;
+		}
+		
+		return false;
 	}
 }
