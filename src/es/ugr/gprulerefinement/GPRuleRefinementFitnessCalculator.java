@@ -36,6 +36,11 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		TreeGenome tg = (TreeGenome) ind.getGenome();
 		String treeString = writeTree(tg);
 		
+		System.out.println("INDIVIDUAL IS: "+treeString);
+		System.out.println("END INDIVIDUAL");		
+		boolean toMaximize = true;
+		double theFitness = 0;
+		
 		/* Step 1: To retrieve patterns from DB
 		 * Step 2: To look for conditions and compare values
 		 * Step 3: To mark pattern as filtered by the rule or not
@@ -47,38 +52,12 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		for(int i = 0; i < rules.size(); i++) {
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
-			String[] arrayConditions = sidesRule.get(0).split("\\sAND\\s");
-			List<String> conditionsRule = new ArrayList<String>(Arrays.asList(arrayConditions));
 			
-			String conditionFormat = "([\\w\\_]+)([\\=\\<\\>\\!\\s]+)(\\w+)\\s?A?N?D?";
-			Pattern conditionPattern = Pattern.compile(conditionFormat);
-			Matcher conditionMatcher = conditionPattern.matcher(sidesRule.get(0));
-			
-			/* => if categorical, = otherwise, in conditionMatcher.group(2) */
-			while (conditionMatcher.find()) {
-				
-				Iterator<Instance> it = wekaInstances.iterator();
-				while(it.hasNext()){
-					Instance patternInstance = it.next();
-					for (Enumeration<Attribute> e = patternInstance.enumerateAttributes(); e.hasMoreElements();) {
-					    if (e.nextElement().name().contentEquals(conditionMatcher.group(1))) {
-					    	//System.out.println(patternInstance.toString(e.nextElement()));
-					    }
-					}
-				}
+			if ((double)coveredPatterns(sidesRule.get(0)) > theFitness) {
+				theFitness += (double)coveredPatterns(sidesRule.get(0));
 			}
 			
-		}
-		
-		
-		System.out.println("INDIVIDUAL IS: "+treeString);
-		System.out.println("END INDIVIDUAL");
-		double theFitness = 0;
-		boolean toMaximize = true;
-		//Write the magic here
-		
-		
-		
+		}	
 		
 		return new DoubleFitness(new Double(theFitness), toMaximize);
 	}
@@ -119,5 +98,48 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 		return arbol;
 		
+	}
+	
+	public static int coveredPatterns(String conditionsRule){
+		
+		int covered = 0;
+		
+		String conditionFormat = "([\\w\\_]+)([\\=\\<\\>\\!\\s]+)(\\w+)\\s?A?N?D?";
+		Pattern conditionPattern = Pattern.compile(conditionFormat);
+		Matcher conditionMatcher = conditionPattern.matcher(conditionsRule);
+		
+		Iterator<Instance> it = wekaInstances.iterator(); // Got the patterns
+		while(it.hasNext()){
+			Instance patternInstance = it.next(); // Got one pattern
+			int counter = 0;
+			int fulfilled = 0;
+			Attribute a = null;
+			for (Enumeration<Attribute> e = patternInstance.enumerateAttributes(); e.hasMoreElements();) { // Got all pattern values separately
+				a = e.nextElement();
+				while (conditionMatcher.find()) { // Got a condition
+					if (a.name().contentEquals(conditionMatcher.group(1))) {
+						counter++;					
+						String ruleValue = null;
+						if (conditionMatcher.group(3).contentEquals("true")) {
+							ruleValue = "1";
+						} else if (conditionMatcher.group(3).contentEquals("false")) {
+							ruleValue = "0";
+						} else {
+							ruleValue = conditionMatcher.group(3);
+						}
+						String patternValue = patternInstance.toString(a);
+						if (patternValue.contentEquals(ruleValue)) {
+							fulfilled++;
+						}
+					}
+				}
+				conditionMatcher.reset();
+			}
+			if (fulfilled == counter) {
+				covered++;
+			}
+		}
+		
+		return covered;
 	}
 }
