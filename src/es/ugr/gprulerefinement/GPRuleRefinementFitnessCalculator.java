@@ -53,8 +53,8 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
-			if ((double)coveredPatterns(sidesRule.get(0)) > theFitness) {
-				theFitness += (double)coveredPatterns(sidesRule.get(0));
+			if ((double)coveredPatterns(sidesRule.get(0), sidesRule.get(1)) > theFitness) {
+				theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1));
 			}
 			
 		}	
@@ -102,7 +102,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 	}
 	
-	public static int coveredPatterns(String conditionsRule){
+	public static int coveredPatterns(String conditionsRule, String label){
 		
 		int covered = 0;
 		
@@ -129,13 +129,18 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 						} else {
 							ruleValue = conditionMatcher.group(3);
 						}
-						String patternValue = patternInstance.toString(a);
-						if (patternValue.contentEquals(ruleValue)) {
+						if (patternInstance.toString(a).contentEquals(ruleValue)) {
 							fulfilled++;
 						}
 					}
 				}
 				conditionMatcher.reset();
+				if (a.name().contentEquals("label")) {
+					counter++;
+					if (patternInstance.toString(a).contentEquals(label)) {
+						fulfilled++;
+					}
+				}
 			}
 			if (fulfilled == counter) {
 				covered++;
