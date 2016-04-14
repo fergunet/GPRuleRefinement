@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +12,6 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import es.ugr.gprulerefinement.variables.Action;
-import es.ugr.gprulerefinement.variables.Variable;
 import es.ugr.osgiliath.OsgiliathService;
 import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.GenericTreeNode;
 import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.TreeGenome;
@@ -21,7 +19,6 @@ import es.ugr.osgiliath.evolutionary.basiccomponents.individuals.DoubleFitness;
 import es.ugr.osgiliath.evolutionary.elements.FitnessCalculator;
 import es.ugr.osgiliath.evolutionary.individual.Fitness;
 import es.ugr.osgiliath.evolutionary.individual.Individual;
-import eu.musesproject.server.entity.PatternsKrs;
 
 public class GPRuleRefinementFitnessCalculator  extends OsgiliathService implements FitnessCalculator{
 
@@ -36,8 +33,6 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		TreeGenome tg = (TreeGenome) ind.getGenome();
 		String treeString = writeTree(tg);
 		
-		System.out.println("INDIVIDUAL IS: "+treeString);
-		System.out.println("END INDIVIDUAL");
 		boolean toMaximize = true;
 		double theFitness = 0;
 		
@@ -48,14 +43,14 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 		String[] rulesTree = treeString.split("\\s?\\n");
 		List<String> rules = new ArrayList<String>(Arrays.asList(rulesTree));
+		Instances initialInstances = new Instances(wekaInstances);
 		
 		for(int i = 0; i < rules.size(); i++) {
+			System.out.println("RULE "+i+" "+initialInstances.size());
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
-			if ((double)coveredPatterns(sidesRule.get(0), sidesRule.get(1)) > theFitness) {
-				theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1));
-			}
+			theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances);
 			
 		}	
 		
@@ -102,7 +97,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 	}
 	
-	public static int coveredPatterns(String conditionsRule, String label){
+	public static int coveredPatterns(String conditionsRule, String label, Instances initialInstances){
 		
 		int covered = 0;
 		
@@ -110,17 +105,37 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		Pattern conditionPattern = Pattern.compile(conditionFormat);
 		Matcher conditionMatcher = conditionPattern.matcher(conditionsRule);
 		
-		Iterator<Instance> it = wekaInstances.iterator(); // Got the patterns
-		while(it.hasNext()){
-			Instance patternInstance = it.next(); // Got one pattern
+		
+		Instances auxInstances = initialInstances;
+		int index = 0;
+		
+		for(int i = 0; i<initialInstances.size();i++){
+			
+			Instance patternInstance = null;
+			patternInstance = initialInstances.get(i);
 			int counter = 0;
 			int fulfilled = 0;
 			Attribute a = null;
 			for (Enumeration<Attribute> e = patternInstance.enumerateAttributes(); e.hasMoreElements();) { // Got all pattern values separately
 				a = e.nextElement();
 				while (conditionMatcher.find()) { // Got a condition
+					
 					if (a.name().contentEquals(conditionMatcher.group(1))) {
-						counter++;					
+						counter++;
+						
+						if (isInteger(conditionMatcher.group(3))) {
+							if (conditionMatcher.group(2).contentEquals("=") && 
+									conditionMatcher.group(3).contentEquals(patternInstance.toString(a))) {
+								fulfilled++;
+							} else if (conditionMatcher.group(2).contentEquals("<") && 
+									Double.parseDouble(patternInstance.toString(a)) < Double.parseDouble(conditionMatcher.group(3))) {
+								fulfilled++;
+							} else if (conditionMatcher.group(2).contentEquals(">") && 
+									Double.parseDouble(patternInstance.toString(a)) > Double.parseDouble(conditionMatcher.group(3))) {
+								fulfilled++;
+							}
+						}
+						
 						String ruleValue = null;
 						if (conditionMatcher.group(3).contentEquals("true")) {
 							ruleValue = "1";
@@ -144,10 +159,26 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			}
 			if (fulfilled == counter) {
 				covered++;
+				auxInstances.remove(index);
 			}
+			index++;
 		}
+		initialInstances = new Instances(auxInstances);
 		
 		return covered;
+	}
+	
+	public static boolean isInteger(String str) {
+		
+		String format = "^\\d+\\.?\\d*";
+		Pattern pattern = Pattern.compile(format);
+		Matcher matcher = pattern.matcher(str);
+		
+		if (matcher.find()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private static boolean isBrotherInside(List<GenericTreeNode> list, GenericTreeNode node){
