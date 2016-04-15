@@ -6,7 +6,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/OsgiliathBasicEvolutionaryComponents"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OsgiliathEvolutionaryAlgorithm"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OsgiliathExperimentLauncher"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/server"/>
-	<classpathentry kind="lib" path="/home/paloma/Github/Muses/MusesServer/lib/wekafull-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/paloma/Github/Muses/MusesServer/musesserver.jar"/>
+	<classpathentry kind="lib" path="/home/paloma/Github/Muses/MusesServer/musescommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

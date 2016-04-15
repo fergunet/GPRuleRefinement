@@ -3,7 +3,6 @@ package es.ugr.gprulerefinement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +32,8 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		TreeGenome tg = (TreeGenome) ind.getGenome();
 		String treeString = writeTree(tg);
 		
+		System.out.println("INDIVIDUAL IS: "+treeString);
+		System.out.println("END INDIVIDUAL");
 		boolean toMaximize = true;
 		double theFitness = 0;
 		
@@ -46,7 +47,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		Instances initialInstances = new Instances(wekaInstances);
 		
 		for(int i = 0; i < rules.size(); i++) {
-			System.out.println("RULE "+i+" "+initialInstances.size());
+			System.out.print("RULE "+i+" "+initialInstances.size()+" ");
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
