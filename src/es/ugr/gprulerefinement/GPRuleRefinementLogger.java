@@ -1,7 +1,7 @@
 package es.ugr.gprulerefinement;
 
 /*
- * GPRefinementLogger.java
+ * PlanetWarsLogger.java
  * 
  * Copyright (c) 2013, Pablo Garcia-Sanchez. All rights reserved.
  *
@@ -27,8 +27,6 @@ package es.ugr.gprulerefinement;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,8 +88,8 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 		try{
 			FileWriter fstream = new FileWriter(filename,true); //EXISTENT FILE
 			BufferedWriter out = new BufferedWriter(fstream);
-			long time =  (System.currentTimeMillis() -initTime) / 1000;
-			out.write(iteration+","+numEvaluations+","+time+","+message);
+			long time =  System.currentTimeMillis() -initTime;
+			out.write(iteration+";"+numEvaluations+";"+time+";"+";"+message);
 			iteration++;
 			out.close();
 		}catch(Exception ex){
@@ -113,7 +111,7 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 		
 		//CREATE FILE
 		Date d = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd.HH'h'mm'm'ss's'");
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd.hh'h'mm'm'ss's'");
 		String timestamp = format.format(d);
 		
 		// Create folder
@@ -123,19 +121,7 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 		String mut = (String) this.getAlgorithmParameters().getParameter(EvolutionaryBasicParameters.MUTATOR_PROB).toString();
 		String problemName = (String) this.getAlgorithmParameters().getParameter(OsgiliathConfiguration.PROBLEM_NAME).toString();
 		folderName += ROOT_FOLDER+"/"+problemName+"_"+cross+"_"+mut;
-		//filename = folderName+"/"+timestamp+"out.run."+this.run+".fwork."+this.getFrameworkId();
-		
-		filename = folderName+"/"+timestamp+".";
-		
-		
-		try{
-			filename = filename + InetAddress.getLocalHost().getHostName();
-		}catch(UnknownHostException ex){
-			
-		}
-		
-		filename = filename + "-" + this.run;
-		
+		filename = folderName+"/"+timestamp+"out.run."+this.run+".fwork."+this.getFrameworkId();
 		try{
 			System.out.println("Creating logfile: "+filename);
 			File folder = new File(folderName);
@@ -152,7 +138,7 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 			for(String k:keys)
 				out.write(k+" = "+this.getAlgorithmParameters().getParameter(k)+"\n");
 			out.write(filename+"\n");
-			out.write("IT,NUM_EVALUATIONS,TIME,SIM,SIZE,DEPTH,AGE,STAMP,TREE;\n");
+			out.write("IT;EVALUATIONS;TIME;BEST_F;AVERAGE_F;BEST_DEPTH;AVERAGE_DEPTH;BEST_SIZE;AVERAGE_SIZE;BEST_AGE;AVERAGE_AGE;\n");
 			out.close();
 			//System.out.println("CREADO ARCHIVO DE LOG "+filename);
 		}catch(Exception ex){
