@@ -89,7 +89,7 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 			FileWriter fstream = new FileWriter(filename,true); //EXISTENT FILE
 			BufferedWriter out = new BufferedWriter(fstream);
 			long time =  System.currentTimeMillis() -initTime;
-			out.write(iteration+";"+numEvaluations+";"+time+";"+";"+message);
+			out.write(iteration+";"+numEvaluations+";"+time+";"+message);
 			iteration++;
 			out.close();
 		}catch(Exception ex){
