@@ -121,7 +121,16 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 		String mut = (String) this.getAlgorithmParameters().getParameter(EvolutionaryBasicParameters.MUTATOR_PROB).toString();
 		String problemName = (String) this.getAlgorithmParameters().getParameter(OsgiliathConfiguration.PROBLEM_NAME).toString();
 		folderName += ROOT_FOLDER+"/"+problemName+"_"+cross+"_"+mut;
-		filename = folderName+"/"+timestamp+"out.run."+this.run+".fwork."+this.getFrameworkId();
+
+		//filename = folderName+"/"+timestamp+"out.run."+this.run+".fwork."+this.getFrameworkId();
+		
+		filename = folderName+"/"+timestamp+".";
+		
+		
+		filename = filename + "-" + this.run;
+		filename = filename + (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
+		
+
 		try{
 			System.out.println("Creating logfile: "+filename);
 			File folder = new File(folderName);
