@@ -1,5 +1,6 @@
 package es.ugr.gprulerefinement;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import es.ugr.osgiliath.evolutionary.elements.Population;
 import es.ugr.osgiliath.evolutionary.elements.Replacer;
 import es.ugr.osgiliath.evolutionary.individual.Fitness;
 import es.ugr.osgiliath.evolutionary.individual.Individual;
-
 import es.ugr.osgiliath.utils.Logger;
 
 public class GPRuleRefinementReplacer extends OsgiliathService implements Replacer {
@@ -111,8 +111,13 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 		double averageAge = totalAge / (all.size() * 1.0);
 
 		String tree = GPRuleRefinementFitnessCalculator.writeTree((TreeGenome) bestI.getGenome());
-		log.stats(bestFitness.toString() + ";" + avgFitness.toString() + ";" + bestSize + ";" + averageSize + ";"
-				+ bestNodes + ";" + averageNodes + ";" + bestAge + ";" + averageAge + ";" + tree + "\n");
+		tree = tree.replace("\n", "|");
+		DecimalFormat num = new DecimalFormat("####.00000000");
+		
+		
+		log.stats(bestFitness.toString() + ";" + avgFitness.toString() + ";" + bestSize + ";" + num.format(averageSize) + ";"
+				+ bestNodes + ";" + num.format(averageNodes) + ";" + bestAge + ";" + num.format(averageAge)
+						+ ";" + tree + "\n");
 	}
 
 	public void setLogger(Logger log) {
