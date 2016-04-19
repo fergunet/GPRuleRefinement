@@ -135,6 +135,7 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 		}
 		
 		filename = filename + "-" + this.run;
+		filename = filename + (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
 		
 		try{
 			System.out.println("Creating logfile: "+filename);

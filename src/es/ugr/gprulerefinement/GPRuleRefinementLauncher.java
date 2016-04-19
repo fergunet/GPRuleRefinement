@@ -30,7 +30,7 @@ public class GPRuleRefinementLauncher {
 
 	}
 
-	public void launchAlgorithm(String fileprops) {
+	public void launchAlgorithm(String fileprops, String datasetTrainingFile) {
 		Stopwatch sw = new Stopwatch();
 		sw.start();
 		// Algorithm and parameters
@@ -48,6 +48,7 @@ public class GPRuleRefinementLauncher {
 		}
 
 		params.setup(defaultProps);
+		params.updateParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE, datasetTrainingFile);
 		/*
 		 * String library = (String)
 		 * params.getParameter("parameters.osgiliart.library.opencv");
@@ -143,8 +144,9 @@ public class GPRuleRefinementLauncher {
 		GPRuleRefinementLauncher pwl = new GPRuleRefinementLauncher();
 		String fileProps = args[0];
 		int numTimes = Integer.parseInt(args[1]);
+		String dataset = args[2];
 		for (int i = 0; i < numTimes; i++) {
-			pwl.launchAlgorithm(fileProps);
+			pwl.launchAlgorithm(fileProps,dataset);
 		}
 
 		System.out.println("EXIT");
