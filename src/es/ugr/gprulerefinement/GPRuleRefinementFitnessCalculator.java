@@ -1,9 +1,5 @@
 package es.ugr.gprulerefinement;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -45,24 +41,33 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		System.out.println("END INDIVIDUAL");
 		boolean toMaximize = true;
 		double theFitness = 0;
+		double theAccuracy = 0;
 		
 		String instancesForFitness = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
-		DataSource source;
-		Instances data = null;
+		String instancesForAccuracy = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
+		DataSource sourceTraining, sourceTest;
+		Instances dataTraining = null;
+		Instances dataTest = null;
 		try {
-			source = new DataSource(instancesForFitness);
-			data = source.getDataSet();
+			sourceTraining = new DataSource(instancesForFitness);
+			dataTraining = sourceTraining.getDataSet();
+			sourceTest = new DataSource(instancesForAccuracy);
+			dataTest = sourceTest.getDataSet();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		if (data.classIndex() == -1) {
-			data.setClassIndex(data.numAttributes() - 1);
+		if (dataTraining.classIndex() == -1) {
+			dataTraining.setClassIndex(dataTraining.numAttributes() - 1);
+		}
+		if (dataTest.classIndex() == -1) {
+			dataTest.setClassIndex(dataTest.numAttributes() - 1);
 		}
 		
 		String[] rulesTree = treeString.split("\\s?\\n");
 		List<String> rules = new ArrayList<String>(Arrays.asList(rulesTree));
-		Instances initialInstances = new Instances(data);
+		Instances initialInstances = new Instances(dataTraining);
+		Instances validationInstances = new Instances(dataTraining);
 		
 		for(int i = 0; i < rules.size(); i++) {
 			System.out.print("RULE "+i+" "+initialInstances.size()+" ");
@@ -70,6 +75,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
 			theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances);
+			theAccuracy += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances);
 			
 		}	
 		
