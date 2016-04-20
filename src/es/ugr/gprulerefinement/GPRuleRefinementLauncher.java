@@ -7,7 +7,7 @@ import java.util.Properties;
 import javax.xml.crypto.Data;
 
 import weka.core.Instances;
-import es.osgiliath.evolutionary.basicimplementations.combinators.BasicOrderRecombinator;
+
 import es.osgiliath.evolutionary.basicimplementations.fitnesscalculators.BasicDistributedFitnessCalculator;
 import es.osgiliath.evolutionary.basicimplementations.mutators.BasicOrderMutator;
 import es.osgiliath.evolutionary.basicimplementations.populations.ListPopulation;
@@ -112,10 +112,10 @@ public class GPRuleRefinementLauncher {
 		crossover.setAlgorithmParameters(params);
 
 		// RECOMBINATOR
-		Recombinator recombinator = new BasicOrderRecombinator();
-		((BasicOrderRecombinator) recombinator).setProblem(problem);
-		((BasicOrderRecombinator) recombinator).setAlgorithmParameters(params);
-		((BasicOrderRecombinator) recombinator).setCrossover(crossover);
+		Recombinator recombinator = new GPRuleRefinementRecombinator();
+		((GPRuleRefinementRecombinator) recombinator).setProblem(problem);
+		((GPRuleRefinementRecombinator) recombinator).setAlgorithmParameters(params);
+		((GPRuleRefinementRecombinator) recombinator).setCrossover(crossover);
 		algo.setRecombinator(recombinator);
 
 		// MUTATION
