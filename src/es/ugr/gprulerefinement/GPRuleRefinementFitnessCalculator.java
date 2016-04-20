@@ -1,5 +1,9 @@
 package es.ugr.gprulerefinement;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -10,6 +14,7 @@ import java.util.regex.Pattern;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 import es.ugr.gprulerefinement.variables.Action;
 import es.ugr.osgiliath.OsgiliathService;
 import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.GenericTreeNode;
@@ -27,6 +32,10 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		GPRuleRefinementFitnessCalculator.wekaInstances = data;
 	}
 
+	public GPRuleRefinementFitnessCalculator() {
+		
+	}
+
 	@Override
 	public Fitness calculateFitness(Individual ind) {
 		TreeGenome tg = (TreeGenome) ind.getGenome();
@@ -37,14 +46,23 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		boolean toMaximize = true;
 		double theFitness = 0;
 		
-		/* Step 1: To retrieve patterns from DB
-		 * Step 2: To look for conditions and compare values
-		 * Step 3: To mark pattern as filtered by the rule or not
-		 * */
+		String instancesForFitness = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
+		DataSource source;
+		Instances data = null;
+		try {
+			source = new DataSource(instancesForFitness);
+			data = source.getDataSet();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (data.classIndex() == -1) {
+			data.setClassIndex(data.numAttributes() - 1);
+		}
 		
 		String[] rulesTree = treeString.split("\\s?\\n");
 		List<String> rules = new ArrayList<String>(Arrays.asList(rulesTree));
-		Instances initialInstances = new Instances(wekaInstances);
+		Instances initialInstances = new Instances(data);
 		
 		for(int i = 0; i < rules.size(); i++) {
 			System.out.print("RULE "+i+" "+initialInstances.size()+" ");
