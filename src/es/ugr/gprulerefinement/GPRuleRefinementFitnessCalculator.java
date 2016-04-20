@@ -72,6 +72,11 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances);
 			
 		}	
+		double validationScore = -1;
+		//WRITE HERE THE VALIDATION CODE
+		
+		
+		((GPRuleRefinementIndividual)ind).setValidationScore(validationScore);
 		
 		return new DoubleFitness(new Double(theFitness), toMaximize);
 	}
