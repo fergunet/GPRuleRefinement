@@ -22,7 +22,7 @@ public class GPRuleRefinementRandomInitializer extends OsgiliathService implemen
 			ArrayList<Individual> pop = new ArrayList<Individual>();
 			
 			for(int i = 0; i< size;i++){
-				Individual ind = new BasicIndividual();
+				Individual ind = new GPRuleRefinementIndividual();
 				ind.setGenome(generateRandomTree());
 				pop.add(ind);
 			}

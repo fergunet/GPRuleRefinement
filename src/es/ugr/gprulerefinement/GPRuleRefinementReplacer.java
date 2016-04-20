@@ -81,7 +81,8 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 		int bestNodes = totalNodes;
 		int totalAge = ((BasicIndividual) all.get(0)).getAge();
 		int bestAge = totalAge;
-
+		double totalValidationScore = ((GPRuleRefinementIndividual)all.get(0)).getValidationScore();
+		double bestValidationScore = totalValidationScore;
 		BasicIndividual first = (BasicIndividual) all.get(0);
 
 		for (int i = 1; i < all.size(); i++) {
@@ -92,6 +93,7 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 			int indNodes = ((TreeGenome) all.get(i).getGenome()).getNumberOfNodes();
 			totalSize += indSize;
 			totalNodes += indNodes;
+			totalValidationScore += ((GPRuleRefinementIndividual)ind).getValidationScore();
 			totalAge += ind.getAge();
 
 			// System.out.println(ind.getFitness()+" < "+bestFitness);
@@ -109,14 +111,22 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 		double averageSize = totalSize / (all.size() * 1.0);
 		double averageNodes = totalNodes / (all.size() * 1.0);
 		double averageAge = totalAge / (all.size() * 1.0);
-
+		double averageValidationScore = totalValidationScore / (all.size() * 1.0);
 		String tree = GPRuleRefinementFitnessCalculator.writeTree((TreeGenome) bestI.getGenome());
 		tree = tree.replace("\n", "|");
 		DecimalFormat num = new DecimalFormat("####.00000000");
 		
 		
-		log.stats(bestFitness.toString() + ";" + avgFitness.toString() + ";" + bestSize + ";" + num.format(averageSize) + ";"
-				+ bestNodes + ";" + num.format(averageNodes) + ";" + bestAge + ";" + num.format(averageAge)
+		log.stats(bestFitness.toString() + ";" 
+				+ num.format(bestValidationScore)+";"
+				+ avgFitness.toString() + ";" 
+				+ num.format(averageValidationScore)+";"
+				+ bestSize + ";" 
+				+ num.format(averageSize) + ";"
+				+ bestNodes + ";" 
+				+ num.format(averageNodes) + ";" 
+				+ bestAge + ";" 
+				+ num.format(averageAge)
 						+ ";" + tree + "\n");
 	}
 
