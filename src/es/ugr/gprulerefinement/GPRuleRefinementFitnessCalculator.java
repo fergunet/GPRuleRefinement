@@ -47,6 +47,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		double theFitness = 0;
 		
 		String instancesForFitness = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
+		String validationFile = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_VALIDATION_FILE);
 		DataSource source;
 		Instances data = null;
 		try {
