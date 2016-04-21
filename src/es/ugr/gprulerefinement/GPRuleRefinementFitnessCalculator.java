@@ -68,7 +68,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		String[] rulesTree = treeString.split("\\s?\\n");
 		List<String> rules = new ArrayList<String>(Arrays.asList(rulesTree));
 		Instances initialInstances = new Instances(dataTraining);
-		Instances validationInstances = new Instances(dataTraining);
+		Instances validationInstances = new Instances(dataTest);
 		
 		for(int i = 0; i < rules.size(); i++) {
 			System.out.print("RULE "+i+" "+initialInstances.size()+" ");
