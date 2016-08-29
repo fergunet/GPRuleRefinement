@@ -129,7 +129,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 		int covered = 0;
 		
-		String conditionFormat = "([\\w\\_]+)([\\=\\<\\>\\!\\s]+)(\\w+)\\s?A?N?D?";
+		String conditionFormat = "(AND|OR)\\s(NOT)?\\s?([\\w\\_]+)([\\=\\<\\>\\!\\s]+)(\\w+)\\s?";
 		Pattern conditionPattern = Pattern.compile(conditionFormat);
 		Matcher conditionMatcher = conditionPattern.matcher(conditionsRule);
 		
@@ -143,51 +143,73 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			patternInstance = initialInstances.get(i);
 			int counter = 0;
 			int fulfilled = 0;
-			Attribute a = null;
-			for (Enumeration<Attribute> e = patternInstance.enumerateAttributes(); e.hasMoreElements();) { // Got all pattern values separately
-				a = e.nextElement();
+			Attribute att = null;
+			for (Enumeration<Attribute> nextAtt = patternInstance.enumerateAttributes(); nextAtt.hasMoreElements();) { // Got all pattern values separately
+				att = nextAtt.nextElement();
 				while (conditionMatcher.find()) { // Got a condition
 					
-					if (a.name().contentEquals(conditionMatcher.group(1))) {
-						counter++;
+					if (att.name().contentEquals(conditionMatcher.group(3))) {
+						if (conditionMatcher.group(1).equalsIgnoreCase("AND")) {
+							counter++;
+						}
 						
-						if (isInteger(conditionMatcher.group(3))) {
-							if (conditionMatcher.group(2).contentEquals("=") && 
-									conditionMatcher.group(3).contentEquals(patternInstance.toString(a))) {
-								fulfilled++;
-							} else if (conditionMatcher.group(2).contentEquals("<") && 
-									Double.parseDouble(patternInstance.toString(a)) < Double.parseDouble(conditionMatcher.group(3))) {
-								fulfilled++;
-							} else if (conditionMatcher.group(2).contentEquals(">") && 
-									Double.parseDouble(patternInstance.toString(a)) > Double.parseDouble(conditionMatcher.group(3))) {
-								fulfilled++;
+						if (isInteger(conditionMatcher.group(5))) {
+							if (conditionMatcher.group(2) != null && conditionMatcher.group(2).equalsIgnoreCase("NOT")) {
+								if (conditionMatcher.group(4).contentEquals("=") && 
+										!conditionMatcher.group(5).contentEquals(patternInstance.toString(att))) {
+									fulfilled++;
+								} else if (conditionMatcher.group(4).contentEquals("<") && 
+										Double.parseDouble(patternInstance.toString(att)) >= Double.parseDouble(conditionMatcher.group(5))) {
+									fulfilled++;
+								} else if (conditionMatcher.group(4).contentEquals(">") && 
+										Double.parseDouble(patternInstance.toString(att)) <= Double.parseDouble(conditionMatcher.group(5))) {
+									fulfilled++;
+								}
+							} else {
+								if (conditionMatcher.group(4).contentEquals("=") && 
+										conditionMatcher.group(5).contentEquals(patternInstance.toString(att))) {
+									fulfilled++;
+								} else if (conditionMatcher.group(4).contentEquals("<") && 
+										Double.parseDouble(patternInstance.toString(att)) < Double.parseDouble(conditionMatcher.group(5))) {
+									fulfilled++;
+								} else if (conditionMatcher.group(4).contentEquals(">") && 
+										Double.parseDouble(patternInstance.toString(att)) > Double.parseDouble(conditionMatcher.group(5))) {
+									fulfilled++;
+								}
 							}
 						}
 						
 						String ruleValue = null;
-						if (conditionMatcher.group(3).contentEquals("true")) {
+						if (conditionMatcher.group(5).contentEquals("true")) {
 							ruleValue = "1";
-						} else if (conditionMatcher.group(3).contentEquals("false")) {
+						} else if (conditionMatcher.group(5).contentEquals("false")) {
 							ruleValue = "0";
 						} else {
-							ruleValue = conditionMatcher.group(3);
+							ruleValue = conditionMatcher.group(5);
 						}
-						if (patternInstance.toString(a).contentEquals(ruleValue)) {
-							fulfilled++;
+						
+						if (conditionMatcher.group(2) != null && conditionMatcher.group(2).equalsIgnoreCase("NOT")) {
+							if (!patternInstance.toString(att).contentEquals(ruleValue)) {
+								fulfilled++;
+							}
+						} else {
+							if (patternInstance.toString(att).contentEquals(ruleValue)) {
+								fulfilled++;
+							}
 						}
 					}
 				}
 				conditionMatcher.reset();
-				if (a.name().contentEquals("label")) {
+				if (att.name().contentEquals("label")) {
 					counter++;
-					if (patternInstance.toString(a).contentEquals(label) && process.contentEquals("fitness") && patternInstance.toString(a).equalsIgnoreCase("deny")) {
+					if (patternInstance.toString(att).contentEquals(label) && process.contentEquals("fitness") && patternInstance.toString(att).equalsIgnoreCase("deny")) {
 						fulfilled++;
-					} else if (patternInstance.toString(a).contentEquals(label) && process.contentEquals("validation")) {
+					} else if (patternInstance.toString(att).contentEquals(label) && process.contentEquals("validation")) {
 						fulfilled++;
 					}
 				}
 			}
-			if (fulfilled == counter) {
+			if (fulfilled >= counter) {
 				covered++;
 				auxInstances.remove(index);
 			}
