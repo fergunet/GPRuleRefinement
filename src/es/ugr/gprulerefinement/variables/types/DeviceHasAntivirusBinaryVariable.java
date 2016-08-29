@@ -7,6 +7,8 @@ public class DeviceHasAntivirusBinaryVariable extends BinaryVariable {
 	public DeviceHasAntivirusBinaryVariable() {
 		this.name = "device_has_antivirus";
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 	@Override
 	public Object clone() {

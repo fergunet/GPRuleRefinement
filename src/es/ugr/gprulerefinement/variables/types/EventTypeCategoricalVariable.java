@@ -22,6 +22,8 @@ public class EventTypeCategoricalVariable extends CategoricalVariable{
 			"CONTEXT_SENSOR_PERIPHERAL"};
 		
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

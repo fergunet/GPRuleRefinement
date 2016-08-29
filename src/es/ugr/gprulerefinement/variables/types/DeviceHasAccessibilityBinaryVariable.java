@@ -8,6 +8,8 @@ public class DeviceHasAccessibilityBinaryVariable extends BinaryVariable {
 		
 		this.name = "device_has_accessibility";
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

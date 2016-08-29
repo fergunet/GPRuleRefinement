@@ -26,6 +26,8 @@ public class WifiEncryptionCategoricalVariable extends CategoricalVariable {
 				"WPA2-PSK-TKIP+CCMPESS"};
 		
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

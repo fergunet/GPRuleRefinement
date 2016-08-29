@@ -17,6 +17,8 @@ public class UserRoleCategoricalVariable extends CategoricalVariable {
 				"International" };
 
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

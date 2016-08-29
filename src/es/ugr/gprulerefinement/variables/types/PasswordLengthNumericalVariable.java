@@ -10,6 +10,8 @@ public class PasswordLengthNumericalVariable extends NumericalVariable {
 		this.min = 5;
 		this.max = 7;
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

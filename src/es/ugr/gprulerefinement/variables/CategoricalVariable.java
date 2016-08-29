@@ -12,7 +12,7 @@ public abstract class CategoricalVariable extends Variable{
 	}
 	
 	public String toString(){
-		return this.getName()+"=>"+this.getValue();
+		return this.connector+" "+this.negation+" "+this.getName()+"=>"+this.getValue();
 	}
 	
 

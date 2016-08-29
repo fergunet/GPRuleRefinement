@@ -75,8 +75,8 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
-			theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances);
-			theAccuracy += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances);
+			theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "fitness");
+			theAccuracy += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");
 			
 		}		
 		
@@ -113,7 +113,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			Action action = (Action)v.getData();
 			GenericTreeNode p = v.getParent();
 			while(p.getParent()!=null){
-				arbol = arbol + p.toString()+" AND ";
+				arbol = arbol + p.toString()+" ";
 				p = p.getParent();
 			}
 			arbol = arbol + p.toString()+" ";
@@ -125,7 +125,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 	}
 	
-	public static int coveredPatterns(String conditionsRule, String label, Instances initialInstances){
+	public static int coveredPatterns(String conditionsRule, String label, Instances initialInstances, String process){
 		
 		int covered = 0;
 		
@@ -180,7 +180,9 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 				conditionMatcher.reset();
 				if (a.name().contentEquals("label")) {
 					counter++;
-					if (patternInstance.toString(a).contentEquals(label)) {
+					if (patternInstance.toString(a).contentEquals(label) && process.contentEquals("fitness") && patternInstance.toString(a).equalsIgnoreCase("deny")) {
+						fulfilled++;
+					} else if (patternInstance.toString(a).contentEquals(label) && process.contentEquals("validation")) {
 						fulfilled++;
 					}
 				}

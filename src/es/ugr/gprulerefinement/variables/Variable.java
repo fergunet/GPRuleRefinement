@@ -8,6 +8,8 @@ public abstract class  Variable implements Gene {
 
 	protected String name;
 	protected String value;
+	protected String connector = "";
+	protected String negation = "";
 
 	public static final String packageName = "es.ugr.gprulerefinement.variables.types";
 
@@ -42,12 +44,35 @@ public abstract class  Variable implements Gene {
 		return this.value;
 	}
 
+	public String getConnector() {
+		return this.connector;
+	}
+
+	public String getNegation() {
+		return this.negation;
+	}
+
 	public  void mutateValue() {
 		this.value = this.getRandomValue();
 	}
 
 	public abstract String getRandomValue();
 	
+	public String getRandomNegation(){
+		String[] possibleValues = new String[2];
+		possibleValues[0] = "NOT";
+		possibleValues[1] = "";
+		int idx = new Random().nextInt(possibleValues.length);
+		return possibleValues[idx];
+	}
+	
+	public String getRandomConnector(){
+		String[] possibleValues = new String[2];
+		possibleValues[0] = "AND";
+		possibleValues[1] = "OR";
+		int idx = new Random().nextInt(possibleValues.length);
+		return possibleValues[idx];		
+	}
 
 	public static Variable generateRandomVariable() {
 		int idx = new Random().nextInt(availableTypes.length);

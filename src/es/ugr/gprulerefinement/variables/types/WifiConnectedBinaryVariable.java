@@ -8,6 +8,8 @@ public class WifiConnectedBinaryVariable extends BinaryVariable {
 		
 		this.name = "wifiConnected";
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public abstract class BinaryVariable extends Variable{
 	public abstract Object clone();
 	
 	public String toString(){
-		return this.name+"="+this.value;
+		return this.connector+" "+this.negation+" "+this.name+"="+this.value;
 	}
 
 	

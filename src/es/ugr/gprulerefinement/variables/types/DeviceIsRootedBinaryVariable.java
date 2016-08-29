@@ -8,6 +8,8 @@ public class DeviceIsRootedBinaryVariable extends BinaryVariable {
 		
 		this.name = "device_is_rooted";
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 		
 	}
 

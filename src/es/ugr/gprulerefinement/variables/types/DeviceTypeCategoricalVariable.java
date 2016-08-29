@@ -28,6 +28,8 @@ public class DeviceTypeCategoricalVariable extends CategoricalVariable{
 		    "1222"};
 		
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override
