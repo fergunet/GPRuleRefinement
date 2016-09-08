@@ -13,6 +13,8 @@ public class AssetConfidentialLevelCategoricalVariable extends
 				"CONFIDENTIAL"};
 		
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

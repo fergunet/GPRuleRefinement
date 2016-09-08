@@ -8,6 +8,8 @@ public class MailHasAttachmentBinaryVariable extends BinaryVariable {
 		
 		this.name = "mail_has_attachment";
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

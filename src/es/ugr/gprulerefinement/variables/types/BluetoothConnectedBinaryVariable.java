@@ -8,6 +8,8 @@ public class BluetoothConnectedBinaryVariable extends BinaryVariable {
 		
 		this.name = "bluetoothConnected";
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

@@ -26,6 +26,8 @@ public class DeviceOSCategoricalVariable extends CategoricalVariable {
 				"Windows7 Home Edition"};
 		
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

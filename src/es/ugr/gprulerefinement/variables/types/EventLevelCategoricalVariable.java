@@ -12,6 +12,8 @@ public class EventLevelCategoricalVariable extends CategoricalVariable{
 		    "COMPLEX_EVENT"};
 		
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override

@@ -10,6 +10,8 @@ public class DeviceScreenTimeoutNumericalVariable extends NumericalVariable {
 		this.min = 0;
 		this.max = 1800;
 		this.value = this.getRandomValue();
+		this.connector = this.getRandomConnector();
+		this.negation = this.getRandomNegation();
 	}
 
 	@Override
