@@ -75,8 +75,13 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
-			theFitness += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "fitness");
-			theAccuracy += (double)coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");
+			List<Double> coveredInst = new ArrayList<Double>();
+			coveredInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "fitness");
+			List<Double> accuracyInst = new ArrayList<Double>();
+			coveredInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "validation");
+			
+			theFitness += coveredInst.get(0) + coveredInst.get(1);
+			theAccuracy += accuracyInst.get(0);
 			
 		}		
 		
@@ -125,9 +130,9 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 	}
 	
-	public static int coveredPatterns(String conditionsRule, String label, Instances initialInstances, String process){
+	public static List<Double> coveredPatterns(String conditionsRule, String label, Instances initialInstances, String process){
 		
-		int covered = 0;
+		List<Double> params = new ArrayList<Double>();
 		
 		String conditionFormat = "(AND|OR)\\s(NOT)?\\s?([\\w\\_]+)([\\=\\<\\>\\!\\s]+)(\\w+)\\s?";
 		Pattern conditionPattern = Pattern.compile(conditionFormat);
@@ -143,6 +148,8 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			patternInstance = initialInstances.get(i);
 			int counter = 0;
 			int fulfilled = 0;
+			int TP, TN, FP, FN, CE;
+			TP = TN = FP = FN = CE = 0;
 			Attribute att = null;
 			for (Enumeration<Attribute> nextAtt = patternInstance.enumerateAttributes(); nextAtt.hasMoreElements();) { // Got all pattern values separately
 				att = nextAtt.nextElement();
@@ -200,24 +207,42 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 					}
 				}
 				conditionMatcher.reset();
-				if (att.name().contentEquals("label")) {
-					counter++;
-					if (patternInstance.toString(att).contentEquals(label) && process.contentEquals("fitness") && patternInstance.toString(att).equalsIgnoreCase("deny")) {
-						fulfilled++;
-					} else if (patternInstance.toString(att).contentEquals(label) && process.contentEquals("validation")) {
-						fulfilled++;
+				if (fulfilled >= counter && att.name().contentEquals("label")) {
+					// Correctly detected instance
+					if (process.contentEquals("fitness")){
+						if (patternInstance.toString(att).equalsIgnoreCase("deny")){ // Negatives
+							if (patternInstance.toString(att).contentEquals(label)){
+								TN++; // True Negatives
+							} else {
+								FP++; // False Positives
+							}
+						} else {
+							if (patternInstance.toString(att).contentEquals(label)){ // Positives
+								TP++; // True Positives
+							} else {
+								FN++; // False Negatives
+							}
+						}
+					} else {
+						if (patternInstance.toString(att).contentEquals(label)) {
+							TP++;
+						} else {
+							CE++;
+						}
 					}
+					auxInstances.remove(index);
 				}
 			}
-			if (fulfilled >= counter) {
-				covered++;
-				auxInstances.remove(index);
-			}
 			index++;
+			params.add((double)TP);
+			params.add((double)TN);
+			params.add((double)FP);
+			params.add((double)FN);
+			System.out.println(CE);
 		}
 		initialInstances = new Instances(auxInstances);
 		
-		return covered;
+		return params;
 	}
 	
 	public static boolean isInteger(String str) {
