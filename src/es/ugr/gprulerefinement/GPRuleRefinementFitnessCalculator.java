@@ -42,6 +42,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		boolean toMaximize = true;
 		double theFitness = 0;
 		double theAccuracy = 0;
+		double classifError = 0;
 		
 		String instancesForFitness = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_TRAINING_FILE);
 		String instancesForAccuracy = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATASET_VALIDATION_FILE);
@@ -78,14 +79,17 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			List<Double> coveredInst = new ArrayList<Double>();
 			coveredInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "fitness");
 			List<Double> accuracyInst = new ArrayList<Double>();
-			coveredInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "validation");
+			accuracyInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");
 			
 			theFitness += coveredInst.get(0) + coveredInst.get(1);
 			theAccuracy += accuracyInst.get(0);
+			classifError += accuracyInst.get(4);
+			
 			
 		}		
 		
 		((GPRuleRefinementIndividual)ind).setValidationScore(theAccuracy);
+		((GPRuleRefinementIndividual)ind).setClassificationError(classifError);
 		
 		return new DoubleFitness(new Double(theFitness), toMaximize);
 	}
@@ -238,7 +242,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			params.add((double)TN);
 			params.add((double)FP);
 			params.add((double)FN);
-			System.out.println(CE);
+			params.add((double)CE);
 		}
 		initialInstances = new Instances(auxInstances);
 		

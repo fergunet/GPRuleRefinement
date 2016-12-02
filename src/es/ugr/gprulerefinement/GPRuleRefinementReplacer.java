@@ -83,6 +83,8 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 		int bestAge = totalAge;
 		double totalValidationScore = ((GPRuleRefinementIndividual)all.get(0)).getValidationScore();
 		double bestValidationScore = totalValidationScore;
+		double totalClassificationError = ((GPRuleRefinementIndividual)all.get(0)).getClassificationError();
+		double bestClassificationError = totalClassificationError;
 		BasicIndividual first = (BasicIndividual) all.get(0);
 
 		for (int i = 1; i < all.size(); i++) {
@@ -94,6 +96,7 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 			totalSize += indSize;
 			totalNodes += indNodes;
 			totalValidationScore += ((GPRuleRefinementIndividual)ind).getValidationScore();
+			totalClassificationError += ((GPRuleRefinementIndividual)ind).getClassificationError();
 			totalAge += ind.getAge();
 
 			// System.out.println(ind.getFitness()+" < "+bestFitness);
@@ -112,6 +115,7 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 		double averageNodes = totalNodes / (all.size() * 1.0);
 		double averageAge = totalAge / (all.size() * 1.0);
 		double averageValidationScore = totalValidationScore / (all.size() * 1.0);
+		double averageClassificationError = totalClassificationError / (all.size() * 1.0);
 		String tree = GPRuleRefinementFitnessCalculator.writeTree((TreeGenome) bestI.getGenome());
 		tree = tree.replace("\n", "|");
 		DecimalFormat num = new DecimalFormat("####.00000000");
@@ -119,8 +123,10 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 		
 		log.stats(bestFitness.toString() + ";" 
 				+ num.format(bestValidationScore)+";"
+				+ num.format(bestClassificationError)+";"
 				+ avgFitness.toString() + ";" 
-				+ num.format(averageValidationScore)+";"
+				+ num.format(averageValidationScore)+";" 
+				+ num.format(averageClassificationError)+";"
 				+ bestSize + ";" 
 				+ num.format(averageSize) + ";"
 				+ bestNodes + ";" 
