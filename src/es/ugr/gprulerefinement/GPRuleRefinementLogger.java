@@ -148,7 +148,7 @@ public class GPRuleRefinementLogger extends OsgiliathService implements Logger{
 			for(String k:keys)
 				out.write(k+" = "+this.getAlgorithmParameters().getParameter(k)+"\n");
 			out.write(filename+"\n");
-			out.write("IT;EVALUATIONS;TIME;BEST_F;BEST_VALIDATION;AVERAGE_F;AVERAGE_VALIDATION;BEST_DEPTH;AVERAGE_DEPTH;BEST_SIZE;AVERAGE_SIZE;BEST_AGE;AVERAGE_AGE;\n");
+			out.write("IT;EVALUATIONS;TIME;BEST_F;BEST_VALIDATION;BEST_C_ERROR;AVERAGE_F;AVERAGE_VALIDATION;AVERAGE_C_ERROR;BEST_DEPTH;AVERAGE_DEPTH;BEST_SIZE;AVERAGE_SIZE;BEST_AGE;AVERAGE_AGE;\n");
 			out.close();
 			//System.out.println("CREADO ARCHIVO DE LOG "+filename);
 		}catch(Exception ex){
