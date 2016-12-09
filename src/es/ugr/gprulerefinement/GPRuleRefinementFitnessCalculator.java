@@ -71,6 +71,9 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		Instances initialInstances = new Instances(dataTraining);
 		Instances validationInstances = new Instances(dataTest);
 		
+		int depth = tg.getDepth();
+		int numNodes = tg.getNumberOfNodes();
+		
 		for(int i = 0; i < rules.size(); i++) {
 			System.out.print("RULE "+i+" "+initialInstances.size()+" ");
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
@@ -81,7 +84,10 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			List<Double> accuracyInst = new ArrayList<Double>();
 			accuracyInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");
 			
-			theFitness += coveredInst.get(0) + coveredInst.get(1);
+			double fc = coveredInst.get(0) + coveredInst.get(1) - (coveredInst.get(2) + coveredInst.get(3));
+			double fs = (double)depth + (double)numNodes;
+			
+			theFitness += ((double)initialInstances.size() - fc) + 0.5*fs;
 			theAccuracy += accuracyInst.get(0);
 			classifError += accuracyInst.get(4);
 			
