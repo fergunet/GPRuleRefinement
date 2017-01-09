@@ -27,15 +27,15 @@ import es.ugr.osgiliath.problem.ProblemParameters;
 import es.ugr.osgiliath.util.impl.HashMapParameters;
 import es.ugr.osgiliath.utils.OsgiliathConfiguration;
 import es.ugr.osgiliath.utils.Stopwatch;
-import eu.musesproject.server.dataminer.DataMiner;
-import eu.musesproject.server.db.handler.DBManager;
-import eu.musesproject.server.entity.PatternsKrs;
-import eu.musesproject.server.scheduler.ModuleType;
+//import eu.musesproject.server.dataminer.DataMiner;
+//import eu.musesproject.server.db.handler.DBManager;
+//import eu.musesproject.server.entity.PatternsKrs;
+//import eu.musesproject.server.scheduler.ModuleType;
 
 public class GPRuleRefinementLauncher {
 	
-	private static DBManager dbManager = new DBManager(ModuleType.KRS);
-	private static DataMiner dm = new DataMiner();
+	//private static DBManager dbManager = new DBManager(ModuleType.KRS);
+	//private static DataMiner dm = new DataMiner();
 
 	public GPRuleRefinementLauncher() {
 
@@ -81,11 +81,12 @@ public class GPRuleRefinementLauncher {
 		// FITNESS CALCULATOR
 
 		fitnessCalculator = new BasicDistributedFitnessCalculator();		
-		List<PatternsKrs> patternList = dbManager.getPatternsKRS();
-		Instances wekaInstances = dm.buildInstancesFromPatterns(patternList);
+		//List<PatternsKrs> patternList = dbManager.getPatternsKRS();
+		//Instances wekaInstances = dm.buildInstancesFromPatterns(patternList);
 		int numThreads = (Integer) params.getParameter(OsgiliathConfiguration.NUM_THREADS);
 		for (int i = 0; i < numThreads; i++) {
-			GPRuleRefinementFitnessCalculator pwfc = new GPRuleRefinementFitnessCalculator(wekaInstances);
+			//GPRuleRefinementFitnessCalculator pwfc = new GPRuleRefinementFitnessCalculator(wekaInstances);
+			GPRuleRefinementFitnessCalculator pwfc = new GPRuleRefinementFitnessCalculator();
 			pwfc.setAlgorithmParameters(params);
 			fitnessCalculator.addFitnessCalculator(pwfc);
 		}

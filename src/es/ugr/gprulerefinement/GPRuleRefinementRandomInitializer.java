@@ -3,6 +3,8 @@ package es.ugr.gprulerefinement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
 import es.ugr.gprulerefinement.variables.Action;
 import es.ugr.gprulerefinement.variables.Variable;
 import es.ugr.osgiliath.OsgiliathService;
@@ -27,7 +29,9 @@ public class GPRuleRefinementRandomInitializer extends OsgiliathService implemen
 				pop.add(ind);
 			}
 			
+			System.out.println("CALCULANdO FITNESS DE LOS INIcIALES:"+pop.size());
 			List<Fitness> fits = this.fc.calculateFitnessForAll(pop);
+			System.out.println("CALCULADOS LOS FITNESS: "+fits.size());
 			int w = 0;
 			for(Fitness f:fits){
 				pop.get(w).setFitness(f);
