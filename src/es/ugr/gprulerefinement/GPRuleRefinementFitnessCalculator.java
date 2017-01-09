@@ -2,6 +2,7 @@ package es.ugr.gprulerefinement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,6 +20,7 @@ import es.ugr.osgiliath.evolutionary.basiccomponents.individuals.DoubleFitness;
 import es.ugr.osgiliath.evolutionary.elements.FitnessCalculator;
 import es.ugr.osgiliath.evolutionary.individual.Fitness;
 import es.ugr.osgiliath.evolutionary.individual.Individual;
+import es.ugr.osgiliath.utils.Random;
 
 public class GPRuleRefinementFitnessCalculator  extends OsgiliathService implements FitnessCalculator{
 
@@ -38,8 +40,9 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		String treeString = writeTree(tg);
 		
 		System.out.println("INDIVIDUAL IS: "+treeString);
-		System.out.println("END INDIVIDUAL");
-		boolean toMaximize = true;
+		//System.out.println("END INDIVIDUAL");
+		//System.out.println("CALCULATING FITNESS OF ONE INDIVIDUAL");
+		boolean toMaximize = false;
 		double theFitness = 0;
 		double theAccuracy = 0;
 		double classifError = 0;
@@ -68,35 +71,43 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 		String[] rulesTree = treeString.split("\\s?\\n");
 		List<String> rules = new ArrayList<String>(Arrays.asList(rulesTree));
+		//List<String> rules = new ArrayList<String>();
+		//String testRule = "AND  app_name=musesawaew89 THEN=STRONGDENY";
+		//rules.add(testRule);
 		Instances initialInstances = new Instances(dataTraining);
 		Instances validationInstances = new Instances(dataTest);
 		
 		int depth = tg.getDepth();
 		int numNodes = tg.getNumberOfNodes();
-		
+		double Str = (double)initialInstances.size();
+		double fc = 0;
+		double fs = (double)depth + (double)numNodes; 
 		for(int i = 0; i < rules.size(); i++) {
-			System.out.print("RULE "+i+" "+initialInstances.size()+" ");
+			
 			String[] arraySides = rules.get(i).split("\\sTHEN=");
 			List<String> sidesRule = new ArrayList<String>(Arrays.asList(arraySides));
 			
 			List<Double> coveredInst = new ArrayList<Double>();
 			coveredInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), initialInstances, "fitness");
 			List<Double> accuracyInst = new ArrayList<Double>();
-			accuracyInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");
+			accuracyInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");			
 			
-			double fc = coveredInst.get(0) + coveredInst.get(1) - (coveredInst.get(2) + coveredInst.get(3));
-			double fs = (double)depth + (double)numNodes;
+			fc += coveredInst.get(0) + coveredInst.get(1) - (coveredInst.get(2) + coveredInst.get(3));
 			
-			theFitness += ((double)initialInstances.size() - fc) + 0.5*fs;
-			theAccuracy += accuracyInst.get(0);
+			theAccuracy += accuracyInst.get(0) + accuracyInst.get(1);
 			classifError += accuracyInst.get(4);
-			
+			System.out.println("RULE "+i+" of initial "+initialInstances.size()+" and validation "+validationInstances.size()+" cov:"+coveredInst+" acc:"+accuracyInst+" fc:"+fc+" fs"+fs);
 			
 		}		
+		theFitness = (Str - fc) + 1*fs;
+		
+		//theFitness = Math.random();
+	    //theAccuracy = Math.random();
+	    //classifError = Math.random();
 		
 		((GPRuleRefinementIndividual)ind).setValidationScore(theAccuracy);
 		((GPRuleRefinementIndividual)ind).setClassificationError(classifError);
-		
+		System.out.println("FITNESS IS "+theFitness);
 		return new DoubleFitness(new Double(theFitness), toMaximize);
 	}
 
@@ -113,7 +124,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 
 	public static String writeTree(TreeGenome tg){
 
-		System.out.println(tg.toStringWithDepth());
+		//System.out.println(tg.toStringWithDepth());
 
 		List<GenericTreeNode> leafs = new ArrayList<GenericTreeNode>();
 		for(GenericTreeNode n:tg.getNodeList()){
@@ -140,7 +151,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		
 	}
 	
-	public static List<Double> coveredPatterns(String conditionsRule, String label, Instances initialInstances, String process){
+	public static List<Double> coveredPatterns(String conditionsRule, String label, Instances instances, String process){
 		
 		List<Double> params = new ArrayList<Double>();
 		
@@ -149,20 +160,19 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		Matcher conditionMatcher = conditionPattern.matcher(conditionsRule);
 		
 		
-		Instances auxInstances = initialInstances;
+		Instances auxInstances = instances;
 		int index = 0;
+		int TP, TN, FP, FN, CE;
+		TP = TN = FP = FN = CE = 0;
 		
-		for(int i = 0; i<initialInstances.size();i++){
+		for(int i = 0; i<instances.size();i++){
 			
 			Instance patternInstance = null;
-			patternInstance = initialInstances.get(i);
+			patternInstance = instances.get(i);
 			int counter = 0;
 			int fulfilled = 0;
-			int TP, TN, FP, FN, CE;
-			TP = TN = FP = FN = CE = 0;
-			Attribute att = null;
-			for (Enumeration<Attribute> nextAtt = patternInstance.enumerateAttributes(); nextAtt.hasMoreElements();) { // Got all pattern values separately
-				att = nextAtt.nextElement();
+			Enumeration<Attribute> nextAtt = patternInstance.enumerateAttributes();
+			for (Attribute att : Collections.list(nextAtt)) { // Got all pattern values separately
 				while (conditionMatcher.find()) { // Got a condition
 					
 					if (att.name().contentEquals(conditionMatcher.group(3))) {
@@ -217,40 +227,33 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 					}
 				}
 				conditionMatcher.reset();
-				if (fulfilled >= counter && att.name().contentEquals("label")) {
-					// Correctly detected instance
-					if (process.contentEquals("fitness")){
-						if (patternInstance.toString(att).equalsIgnoreCase("deny")){ // Negatives
-							if (patternInstance.toString(att).contentEquals(label)){
-								TN++; // True Negatives
-							} else {
-								FP++; // False Positives
-							}
-						} else {
-							if (patternInstance.toString(att).contentEquals(label)){ // Positives
-								TP++; // True Positives
-							} else {
-								FN++; // False Negatives
-							}
-						}
+				
+			}
+			if (counter > 0 && fulfilled >= counter) {
+				// Correctly detected instance
+				if (patternInstance.toString(patternInstance.classAttribute()).equalsIgnoreCase("strongdeny")){ // Negatives
+					if (patternInstance.toString(patternInstance.classAttribute()).contentEquals(label)){
+						TN++; // True Negatives
 					} else {
-						if (patternInstance.toString(att).contentEquals(label)) {
-							TP++;
-						} else {
-							CE++;
-						}
+						FP++; // False Positives
 					}
-					auxInstances.remove(index);
+				} else {
+					if (patternInstance.toString(patternInstance.classAttribute()).contentEquals(label)){ // Positives
+						TP++; // True Positives
+					} else {
+						FN++; // False Negatives
+					}
 				}
+				auxInstances.remove(i);
 			}
 			index++;
-			params.add((double)TP);
-			params.add((double)TN);
-			params.add((double)FP);
-			params.add((double)FN);
-			params.add((double)CE);
 		}
-		initialInstances = new Instances(auxInstances);
+		params.add((double)TP);
+		params.add((double)TN);
+		params.add((double)FP);
+		params.add((double)FN);
+		params.add((double)CE);
+		instances = new Instances(auxInstances);
 		
 		return params;
 	}

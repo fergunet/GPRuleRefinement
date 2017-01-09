@@ -26,16 +26,27 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 
 		int popSize = pop.getSize();
 		currentGeneration++;
-
+		System.out.println("CURRENT GENERATION "+currentGeneration+"-----------------------");
 		// CALCULAR TODOS
-		pop.addIndividuals(offspring);
+		/*pop.addIndividuals(offspring);
 		List<Fitness> fits = this.fitnessCalculator.calculateFitnessForAll(pop.getAllIndividuals());
 		int w = 0;
 
 		for (Fitness f : fits) {
 			pop.getAllIndividuals().get(w).setFitness(f);
 			w++;
+		}*/
+		
+		//CALCULAR SOLO DESCENDENCIA
+		List<Fitness> fits = this.fitnessCalculator.calculateFitnessForAll(offspring);
+		int w = 0;
+
+		for (Fitness f : fits) {
+			offspring.get(w).setFitness(f);
+			w++;
 		}
+		pop.addIndividuals(offspring);
+		//FIN CALCULO DE DESCENDENCIA Y AÑADIR A POP GLOBAL
 
 		for (int i = 0; i < pop.getAllIndividuals().size(); i++) {
 			BasicIndividual ind = (BasicIndividual) pop.getAllIndividuals().get(i);
@@ -99,7 +110,7 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 			totalClassificationError += ((GPRuleRefinementIndividual)ind).getClassificationError();
 			totalAge += ind.getAge();
 
-			// System.out.println(ind.getFitness()+" < "+bestFitness);
+			//System.out.println(ind.getFitness()+" < "+bestFitness);
 			if (ind.getFitness().compareTo(bestFitness) < -1) {
 				bestFitness = ind.getFitness(); // TODO mejor el
 												// pop.getNBestIndividuals();
@@ -107,6 +118,7 @@ public class GPRuleRefinementReplacer extends OsgiliathService implements Replac
 				bestNodes = indNodes;
 				bestAge = ind.getAge();
 				bestI = ind;
+				System.out.println("UNO MEJOL");
 			}
 		}
 
