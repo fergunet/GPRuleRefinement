@@ -13,12 +13,15 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import es.ugr.gprulerefinement.variables.Action;
+import es.ugr.gprulerefinement.simple.GPRuleRefinementSimpleIndividual;
 import es.ugr.osgiliath.OsgiliathService;
 import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.GenericTreeNode;
+import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.ListGenome;
 import es.ugr.osgiliath.evolutionary.basiccomponents.genomes.TreeGenome;
 import es.ugr.osgiliath.evolutionary.basiccomponents.individuals.DoubleFitness;
 import es.ugr.osgiliath.evolutionary.elements.FitnessCalculator;
 import es.ugr.osgiliath.evolutionary.individual.Fitness;
+import es.ugr.osgiliath.evolutionary.individual.Gene;
 import es.ugr.osgiliath.evolutionary.individual.Individual;
 import es.ugr.osgiliath.utils.Random;
 
@@ -36,13 +39,27 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 
 	@Override
 	public Fitness calculateFitness(Individual ind) {
-		TreeGenome tg = (TreeGenome) ind.getGenome();
-		String treeString = writeTree(tg);
+		
+		String treeString;
+		int depth = 0;
+		int numNodes = 0;
+		String action = (String) this.getAlgorithmParameters().getParameter(GPRuleRefinementParameters.DATA_CLASS);
+		if(ind.getGenome() instanceof TreeGenome){
+			TreeGenome tg = (TreeGenome) ind.getGenome();
+			treeString = writeTree(tg);
+			depth = tg.getDepth();
+			numNodes = tg.getNumberOfNodes();
+		}
+		else{
+			ListGenome lg = (ListGenome) ind.getGenome();
+			treeString = writeList(lg, action);
+			numNodes = lg.getGeneList().size();
+		}
 		
 		System.out.println("INDIVIDUAL IS: "+treeString);
 		//System.out.println("END INDIVIDUAL");
 		//System.out.println("CALCULATING FITNESS OF ONE INDIVIDUAL");
-		boolean toMaximize = false;
+		boolean toMaximize = true;
 		double theFitness = 0;
 		double theAccuracy = 0;
 		double classifError = 0;
@@ -77,8 +94,7 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 		Instances initialInstances = new Instances(dataTraining);
 		Instances validationInstances = new Instances(dataTest);
 		
-		int depth = tg.getDepth();
-		int numNodes = tg.getNumberOfNodes();
+		
 		double Str = (double)initialInstances.size();
 		double fc = 0;
 		double fs = (double)depth + (double)numNodes; 
@@ -92,23 +108,43 @@ public class GPRuleRefinementFitnessCalculator  extends OsgiliathService impleme
 			List<Double> accuracyInst = new ArrayList<Double>();
 			accuracyInst = coveredPatterns(sidesRule.get(0), sidesRule.get(1), validationInstances, "validation");			
 			
-			fc += coveredInst.get(0) + coveredInst.get(1) - (coveredInst.get(2) + coveredInst.get(3));
+			//fc += coveredInst.get(0) + coveredInst.get(1) - (coveredInst.get(2) + coveredInst.get(3));
+			fc += coveredInst.get(0) + coveredInst.get(1);			
 			
 			theAccuracy += accuracyInst.get(0) + accuracyInst.get(1);
 			classifError += accuracyInst.get(4);
 			System.out.println("RULE "+i+" of initial "+initialInstances.size()+" and validation "+validationInstances.size()+" cov:"+coveredInst+" acc:"+accuracyInst+" fc:"+fc+" fs"+fs);
 			
 		}		
-		theFitness = (Str - fc) + 1*fs;
+		theFitness = fc/Str;
+		//theFitness = (Str - fc) + 0*fs;
 		
 		//theFitness = Math.random();
 	    //theAccuracy = Math.random();
 	    //classifError = Math.random();
 		
-		((GPRuleRefinementIndividual)ind).setValidationScore(theAccuracy);
-		((GPRuleRefinementIndividual)ind).setClassificationError(classifError);
+		if(ind.getGenome() instanceof TreeGenome){
+			((GPRuleRefinementIndividual)ind).setValidationScore(theAccuracy);
+			((GPRuleRefinementIndividual)ind).setClassificationError(classifError);
+		}
+		else{
+			((GPRuleRefinementSimpleIndividual)ind).setValidationScore(theAccuracy);
+			((GPRuleRefinementSimpleIndividual)ind).setClassificationError(classifError);
+		}
+		
 		System.out.println("FITNESS IS "+theFitness);
 		return new DoubleFitness(new Double(theFitness), toMaximize);
+	}
+
+	public static String writeList(ListGenome lg, String action) {
+		
+		String regla = "";
+		for(Gene g:lg.getGeneList()) {
+			regla = regla + g.toString() + " ";
+		}
+		regla = regla + "THEN=" + action;
+		
+		return regla;
 	}
 
 	@Override
